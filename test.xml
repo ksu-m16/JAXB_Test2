@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding = "UTF-8"?>
+<abook>
+<contact id = "1">
+<name>kernel</name>
+<phone>123</phone>
+<phone>321</phone>
+</contact>
+
+<contact id = "2">
+<name>xu</name>
+<phone>222</phone>
+<address>somewhere</address>
+</contact>
+
+<group id = "1">
+<name>users</name>
+<contact>1</contact>
+<contact>2</contact>
+</group>
+</abook>
