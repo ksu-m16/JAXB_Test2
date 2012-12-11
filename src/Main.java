@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,7 +9,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -42,15 +40,26 @@ public class Main {
 @XmlRootElement(name = "abook")
 class Abook {
 	
-	public List<Contact> entry = new ArrayList<Contact>();
-    public Abook(Map<Integer, Contact> map) {
+	public Abook(Map<Integer, Contact> map) {
         for( Map.Entry<Integer, Contact> e : map.entrySet() )
-            entry.add(new Contact(e));
+            contactsList.add(new Contact(e));
     }
     public Abook() {}
+    
+    @XmlElement (name="contact", type = Contact.class)
+    public List<Contact> getContacts() {  
+        List<Contact> list = new ArrayList<Contact>();  
+        for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {  
+        	Contact c =new Contact(entry);  
+            list.add(c);  
+        }  
+        return list;  
+    }  
+    
+    private List<Contact> contactsList = new ArrayList<Contact>();
 	
 //	@XmlElements(value = { @XmlElement(name = "contact", type = TreeMap.class)})
-	@XmlElement
+//	@XmlElement (name="contact")
 	TreeMap<Integer, Contact> contacts = new TreeMap<Integer, Contact>();
 	
 	public String toString(){
