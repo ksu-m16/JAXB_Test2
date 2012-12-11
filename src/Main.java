@@ -7,10 +7,13 @@ import java.util.TreeMap;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 
 public class Main {
@@ -36,6 +39,7 @@ public class Main {
 	}
 
 }
+
 
 @XmlRootElement(name = "abook")
 class Abook {
@@ -69,6 +73,35 @@ class Abook {
 		}
 		return sb.toString();
 	}
+	
+	
+	public static class XmlXuMapAdapter<K, V> extends XmlAdapter<Abook, Map<K, V>> {
+		 
+	    @Override
+	    public Map<K, V> unmarshal(Abook v) throws Exception {
+	        TreeMap<Integer, Contact> map = new TreeMap<Integer, Contact>();
+	 
+	        for (Contact c : v.getContacts()) {
+	            map.put(c.id, c);
+	        }
+	        return (Map<K, V>) map;
+	    }
+	 
+	    @Override
+	    public Abook marshal(Map<K, V> v) throws Exception {
+	    	Abook book = new Abook((Map<Integer, Contact>) v);
+	 
+//	        for (Map.Entry<K, V> entry : v.entrySet()) {
+//	            MapEntryType<K, V> mapEntryType = new MapEntryType<K, V>();
+//	            mapEntryType.setKey(entry.getKey());
+//	            mapEntryType.setValue(entry.getValue());
+//	            book.getEntry().add(mapEntryType);
+//	        }
+	        return book;
+	    }
+	}
+	
+	
 }
 
 @XmlType(name="contact")
@@ -110,4 +143,6 @@ class Group {
 	
 	
 }
+
+
 
