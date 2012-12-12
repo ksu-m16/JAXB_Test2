@@ -53,19 +53,19 @@ class Abook {
     public Abook() {}
     
     @XmlElement (name="contact", type = Contact.class)
-    public List<Contact> getContacts() {  
+    public Contact[] getContacts() {  
         List<Contact> list = new ArrayList<Contact>();  
         for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {  
         	Contact c =new Contact(entry);  
             list.add(c);  
         }  
-        return list;  
+        return list.toArray(new Contact[list.size()]);   
     } 
     
 //    @XmlElement (name="contact", type = Contact.class)
-    public void setContacts(List<Contact> list) {  
-        for(Contact c : list) {  
-            this.contacts.put(c.id, c);  
+    public void setContacts(Contact[] arr) {  
+        for(Contact c : arr) {  
+            contacts.put(c.id, c);  
         }  
     }  
     
