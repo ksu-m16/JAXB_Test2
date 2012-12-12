@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -6,6 +9,7 @@ import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,21 +26,55 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		FileOutputStream fos = null;
 		try {
-			 
 			File file = new File("test2.xml");
-			JAXBContext jaxbContext = JAXBContext.newInstance(Abook.class);
-	 
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+	        JAXBContext jc = JAXBContext.newInstance(Abook.class);  
+	        
+	        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
 			Abook book = (Abook) jaxbUnmarshaller.unmarshal(file);
-			
+	        
 			System.out.println(book);
-			System.out.println(book.contacts.size());
+			System.out.println("add contacts");
+			
+			Contact c3 = new Contact();
+			c3.id = 3;
+		    c3.name = "c3";
+		    c3.phone = new ArrayList<String>();
+		    c3.phone.add("121212");
+		    c3.phone.add("212121");
+ 		    c3.address = "";
+		    
+		    Contact c4 = new Contact();
+			c4.id = 4;
+		    c4.name = "c4";
+		    c4.address = "uiii";
+			
+		    book.contacts.put(c3.id, c3);  
+		    book.contacts.put(c4.id, c4);  
+			
+	        Marshaller m = jc.createMarshaller();  
+	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	        fos = new FileOutputStream(file);
+	        m.marshal(book, fos);
+
+			System.out.println(book);
 	 
 		  } catch (JAXBException e) {
 			e.printStackTrace();
-		  }
-
+		  } catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+				}
+			}
+		}
 	}
 
 }
@@ -62,7 +100,6 @@ class Abook {
         return list.toArray(new Contact[list.size()]);   
     } 
     
-//    @XmlElement (name="contact", type = Contact.class)
     public void setContacts(Contact[] arr) {  
         for(Contact c : arr) {  
             contacts.put(c.id, c);  
@@ -71,45 +108,15 @@ class Abook {
     
     private List<Contact> contactsList = new ArrayList<Contact>();
 	
-//	@XmlElements(value = { @XmlElement(name = "contact", type = TreeMap.class)})
-//	@XmlElement (name="contact")
 	TreeMap<Integer, Contact> contacts = new TreeMap<Integer, Contact>();
 	
 	public String toString(){
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder("");
 		for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {
 			sb.append(entry.getKey() + ". " + entry.getValue() + "\n");
 		}
 		return sb.toString();
 	}
-	
-	
-//	public static class XmlXuMapAdapter<K, V> extends XmlAdapter<Abook, Map<K, V>> {
-//		 
-//	    @Override
-//	    public Map<K, V> unmarshal(Abook book) throws Exception {
-//	        TreeMap<Integer, Contact> map = new TreeMap<Integer, Contact>();
-//	 
-//	        for (Contact c : book.getContacts()) {
-//	            map.put(c.id, c);
-//	        }
-//	        return (Map<K, V>) map;
-//	    }
-//	 
-//	    @Override
-//	    public Abook marshal(Map<K, V> v) throws Exception {
-//	    	Abook book = new Abook((Map<Integer, Contact>) v);
-//	 
-////	        for (Map.Entry<K, V> entry : v.entrySet()) {
-////	            MapEntryType<K, V> mapEntryType = new MapEntryType<K, V>();
-////	            mapEntryType.setKey(entry.getKey());
-////	            mapEntryType.setValue(entry.getValue());
-////	            book.getEntry().add(mapEntryType);
-////	        }
-//	        return book;
-//	    }
-//	}
-	
 	
 }
 
@@ -131,16 +138,19 @@ class Contact {
 	public String name;
 	
 	@XmlElement
-	public List<String> phone;
+	public List<String> phone = new ArrayList<String>();
 	
 	@XmlElement
 	public String address = "not set";
 	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		sb.append(name + "\nPhone:");
-		for (String ph : phone) {
-			sb.append(ph + "\n");
+		sb.append(name + "\n");
+		if (phone.size() > 0) { 
+			sb.append("Phone:\n");
+			for (String ph : phone) {
+				sb.append(ph + "\n");
+			}
 		}
 		sb.append("Address: " + address);
 		return sb.toString();
