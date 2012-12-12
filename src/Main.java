@@ -24,13 +24,14 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			 
-			File file = new File("test.xml");
+			File file = new File("test2.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(Abook.class);
 	 
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			Abook book = (Abook) jaxbUnmarshaller.unmarshal(file);
 			
 			System.out.println(book);
+			System.out.println(book.contacts.size());
 	 
 		  } catch (JAXBException e) {
 			e.printStackTrace();
@@ -42,6 +43,7 @@ public class Main {
 
 
 @XmlRootElement(name = "abook")
+@XmlAccessorType(XmlAccessType.NONE) 
 class Abook {
 	
 	public Abook(Map<Integer, Contact> map) {
@@ -58,6 +60,13 @@ class Abook {
             list.add(c);  
         }  
         return list;  
+    } 
+    
+//    @XmlElement (name="contact", type = Contact.class)
+    public void setContacts(List<Contact> list) {  
+        for(Contact c : list) {  
+            this.contacts.put(c.id, c);  
+        }  
     }  
     
     private List<Contact> contactsList = new ArrayList<Contact>();
@@ -75,31 +84,31 @@ class Abook {
 	}
 	
 	
-	public static class XmlXuMapAdapter<K, V> extends XmlAdapter<Abook, Map<K, V>> {
-		 
-	    @Override
-	    public Map<K, V> unmarshal(Abook v) throws Exception {
-	        TreeMap<Integer, Contact> map = new TreeMap<Integer, Contact>();
-	 
-	        for (Contact c : v.getContacts()) {
-	            map.put(c.id, c);
-	        }
-	        return (Map<K, V>) map;
-	    }
-	 
-	    @Override
-	    public Abook marshal(Map<K, V> v) throws Exception {
-	    	Abook book = new Abook((Map<Integer, Contact>) v);
-	 
-//	        for (Map.Entry<K, V> entry : v.entrySet()) {
-//	            MapEntryType<K, V> mapEntryType = new MapEntryType<K, V>();
-//	            mapEntryType.setKey(entry.getKey());
-//	            mapEntryType.setValue(entry.getValue());
-//	            book.getEntry().add(mapEntryType);
+//	public static class XmlXuMapAdapter<K, V> extends XmlAdapter<Abook, Map<K, V>> {
+//		 
+//	    @Override
+//	    public Map<K, V> unmarshal(Abook book) throws Exception {
+//	        TreeMap<Integer, Contact> map = new TreeMap<Integer, Contact>();
+//	 
+//	        for (Contact c : book.getContacts()) {
+//	            map.put(c.id, c);
 //	        }
-	        return book;
-	    }
-	}
+//	        return (Map<K, V>) map;
+//	    }
+//	 
+//	    @Override
+//	    public Abook marshal(Map<K, V> v) throws Exception {
+//	    	Abook book = new Abook((Map<Integer, Contact>) v);
+//	 
+////	        for (Map.Entry<K, V> entry : v.entrySet()) {
+////	            MapEntryType<K, V> mapEntryType = new MapEntryType<K, V>();
+////	            mapEntryType.setKey(entry.getKey());
+////	            mapEntryType.setValue(entry.getValue());
+////	            book.getEntry().add(mapEntryType);
+////	        }
+//	        return book;
+//	    }
+//	}
 	
 	
 }
