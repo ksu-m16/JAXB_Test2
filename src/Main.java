@@ -29,7 +29,7 @@ public class Main {
 		
 		FileOutputStream fos = null;
 		try {
-			File file = new File("test2.xml");
+			File file = new File("test.xml");
 
 	        JAXBContext jc = JAXBContext.newInstance(Abook.class);  
 	        
@@ -110,11 +110,27 @@ class Abook {
 	
 	TreeMap<Integer, Contact> contacts = new TreeMap<Integer, Contact>();
 	
+	@XmlElement(name = "group", type = Group.class)
+	ArrayList<Group> groups = new ArrayList<Group>();
+	
 	public String toString(){
 		StringBuilder sb = new StringBuilder("");
 		for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {
 			sb.append(entry.getKey() + ". " + entry.getValue() + "\n");
 		}
+		if (groups.size() > 0) {
+			sb.append("\nGroups:\n");
+			for (Group g : groups) {
+				sb.append(g.id + ". " + g.name + "\n");
+				
+				for (Integer n : g.contacts) {
+					sb.append(contacts.get(n).name + "\n");
+				}
+				
+			}
+			
+		}
+		
 		return sb.toString();
 	}
 	
@@ -158,8 +174,18 @@ class Contact {
 	}
 }
 
+@XmlType(name="group")
 class Group {
+	public Group() {}
+
+	@XmlAttribute(name = "id", required = true)
+	public int id;
 	
+	@XmlElement(required = true)
+	public String name;
+	
+	@XmlElement(name = "contact")
+	public List<Integer> contacts = new ArrayList<Integer>();
 	
 }
 
