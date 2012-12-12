@@ -9,7 +9,6 @@
         <name>kernel</name>
         <phone>123</phone>
         <phone>321</phone>
-        <address>not set</address>
     </contact>
     <contact id="2">
         <name>xu</name>
@@ -20,7 +19,6 @@
         <name>c3</name>
         <phone>121212</phone>
         <phone>212121</phone>
-        <address></address>
     </contact>
     <contact id="4">
         <name>c4</name>

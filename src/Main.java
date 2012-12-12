@@ -45,7 +45,6 @@ public class Main {
 		    c3.phone = new ArrayList<String>();
 		    c3.phone.add("121212");
 		    c3.phone.add("212121");
- 		    c3.address = "";
 		    
 		    Contact c4 = new Contact();
 			c4.id = 4;
@@ -81,23 +80,13 @@ public class Main {
 
 
 @XmlRootElement(name = "abook")
-@XmlAccessorType(XmlAccessType.NONE) 
 class Abook {
-	
-	public Abook(Map<Integer, Contact> map) {
-        for( Map.Entry<Integer, Contact> e : map.entrySet() )
-            contactsList.add(new Contact(e));
-    }
-    public Abook() {}
+
+	public Abook() {}
     
-    @XmlElement (name="contact", type = Contact.class)
+    @XmlElement (name = "contact", type = Contact.class)
     public Contact[] getContacts() {  
-        List<Contact> list = new ArrayList<Contact>();  
-        for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {  
-        	Contact c =new Contact(entry);  
-            list.add(c);  
-        }  
-        return list.toArray(new Contact[list.size()]);   
+        return contacts.values().toArray(new Contact[0]);   
     } 
     
     public void setContacts(Contact[] arr) {  
@@ -105,8 +94,6 @@ class Abook {
             contacts.put(c.id, c);  
         }  
     }  
-    
-    private List<Contact> contactsList = new ArrayList<Contact>();
 	
 	TreeMap<Integer, Contact> contacts = new TreeMap<Integer, Contact>();
 	
@@ -114,7 +101,7 @@ class Abook {
 	ArrayList<Group> groups = new ArrayList<Group>();
 	
 	public String toString(){
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {
 			sb.append(entry.getKey() + ". " + entry.getValue() + "\n");
 		}
@@ -137,27 +124,15 @@ class Abook {
 }
 
 @XmlType(name="contact")
-class Contact {
+class Contact extends IAddressBookEntry {
 	
 	public Contact() {}
-    public Contact(Map.Entry<Integer, Contact> e) {
-       id = e.getKey();
-       name = e.getValue().name;
-       phone = e.getValue().phone;
-       address = e.getValue().address;
-    }
 
-	@XmlAttribute(name = "id", required = true)
-	public int id;
-	
-	@XmlElement(required = true)
-	public String name;
-	
-	@XmlElement
+	@XmlElement (name = "phone")
 	public List<String> phone = new ArrayList<String>();
 	
-	@XmlElement
-	public String address = "not set";
+	@XmlElement (name = "address")
+	public String address;
 	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -168,21 +143,15 @@ class Contact {
 				sb.append(ph + "\n");
 			}
 		}
-		sb.append("Address: " + address);
+		sb.append("Address: " + ((address == null) ? "not set" : address ));
 		return sb.toString();
 		
 	}
 }
 
 @XmlType(name="group")
-class Group {
+class Group extends IAddressBookEntry {
 	public Group() {}
-
-	@XmlAttribute(name = "id", required = true)
-	public int id;
-	
-	@XmlElement(required = true)
-	public String name;
 	
 	@XmlElement(name = "contact")
 	public List<Integer> contacts = new ArrayList<Integer>();
