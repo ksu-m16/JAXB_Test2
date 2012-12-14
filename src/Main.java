@@ -30,7 +30,7 @@ public class Main {
 		FileOutputStream fos = null;
 		try {
 			File file = new File("test.xml");
-
+//bla-bla-bla
 	        JAXBContext jc = JAXBContext.newInstance(Abook.class);  
 	        
 	        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
